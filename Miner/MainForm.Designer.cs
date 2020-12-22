@@ -1,4 +1,4 @@
-﻿namespace Miner
+﻿namespace miner
 {
     partial class MainForm
     {
@@ -28,13 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.panelMain = new System.Windows.Forms.Panel();
             this.SuspendLayout();
+            // 
+            // panelMain
+            // 
+            this.panelMain.Location = new System.Drawing.Point(12, 12);
+            this.panelMain.Name = "panelMain";
+            this.panelMain.Size = new System.Drawing.Size(438, 381);
+            this.panelMain.TabIndex = 0;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(462, 453);
+            this.Controls.Add(this.panelMain);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "MainForm";
@@ -44,6 +53,8 @@
         }
 
         #endregion
+
+        private System.Windows.Forms.Panel panelMain;
     }
 }
 
