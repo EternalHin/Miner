@@ -28,10 +28,15 @@ namespace miner
             public static Form mainForm;
             public static Panel panelMain;
 
+            public static int number;
+            public static bool firstStep = true;
+
+
             public static void Init(Form tempForm, Panel tempPanel)
             {
                 mainForm = tempForm;
                 panelMain = tempPanel;
+                firstStep = true;
                 ConfigureFromSize(mainForm, panelMain);
                 InitMap();
                 InitButtons(panelMain);
@@ -66,26 +71,95 @@ namespace miner
                         Button button = new Button();
                         button.Location = new Point(j * cellSize, i * cellSize);
                         button.Size = new Size(cellSize, cellSize);
+                        button.MouseUp += new MouseEventHandler(OnButtonPressMouse);
                         panelMain.Controls.Add(button);
                         buttons[i + 1, j + 1] = button;
                     }
                 }
             }
 
-            public static void InitButtons(Form panelMain)
+            public static void OnButtonPressMouse(object sender, MouseEventArgs e)
             {
-                panelMain.Controls.Clear();
-                for (int i = 0; i < mapSize; i++)
+                Button pressButton = sender as Button;
+                switch (e.Button.ToString())
                 {
-                    for (int j = 0; j < mapSize; j++)
+                    case "Right":
+
+                        break;
+                    case "Left":
+                        OnLeftButtonPress(pressButton);
+                        break;
+                }
+            }
+            public static void OnLeftButtonPress(Button pressedButton)
+            {
+                int x = pressedButton.Location.Y / cellSize + 1;
+                int y = pressedButton.Location.X / cellSize + 1;
+                pressedButton.Enabled = false;
+                if (firstStep)
+                {
+                    SeedMap();
+                    firstStep = false;
+                }
+
+                if (map[x, y] == -1)
+                {
+                    for (int i = 1; i <= mapSize; i++)
                     {
-                        Button button = new Button();
-                        button.Location = new Point(j * cellSize, i * cellSize);
-                        button.Size = new Size(cellSize, cellSize);
-                        panelMain.Controls.Add(button);
-                        buttons[i + 1, j + 1] = button;
+                        for (int j = 1; j <= mapSize; j++)
+                        {
+                            if (map[i, j] == -1)
+                                buttons[i, j].BackColor = Color.Red;
+                        }
+                    }
+                    MessageBox.Show("GG");
+                    Init(mainForm, panelMain);
+                    return;
+                }
+
+                buttons[x, y].Text = CheckMin(x, y).ToString();
+            }
+            public static void SeedMap()
+            {
+                Random rnd = new Random();
+                number = rnd.Next(mapSize, 4 * mapSize);
+                int x = rnd.Next(0, mapSize) + 1;
+                int y = rnd.Next(0, mapSize) + 1;
+
+                for (int n = 0; n < number; n++)
+                {
+                    while (map[x, y] == -1 || !buttons[x, y].Enabled)
+                    {
+                        x = rnd.Next(0, mapSize) + 1;
+                        y = rnd.Next(0, mapSize) + 1;
+                    }
+
+                    map[x, y] = -1;
+                }
+
+                for (int i = 1; i <= mapSize; i++)
+                {
+                    for (int j = 1; j <= mapSize; j++)
+                    {
+                        if (map[i, j] == -1)
+                            continue;
+                        map[i, j] = CheckMin(i, j);
+
                     }
                 }
+            }
+            public static int CheckMin(int xPos, int yPos)
+            {
+                int count = 0;
+                for (int i = -1; i <= 1; i++)
+                {
+                    for (int j = -1; j <= 1; j++)
+                    {
+                        if (map[xPos + i, yPos + j] == -1)
+                            count++;
+                    }
+                }
+                return count;
             }
         }
     }
